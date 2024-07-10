@@ -1,42 +1,38 @@
-import React, { useState } from 'react';
-import './Navbar.css';
+import React, { useContext, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-
+import './Navbar.css';
 import logo from '../Assets/logo.png';
 import cart_icon from '../Assets/cart_icon.png';
+import { ShopContext } from '../../Context/ShopContext';
+import nav_dropdown from '../Assets/nav_dropdown.png';
 
-const Navbar = ({ cartCount }) => {
+const Navbar = () => {
     const [menu, setMenu] = useState("shop");
+    const { getTotalCartItems } = useContext(ShopContext);
+    const menuRef = useRef();
+    const dropdown_toggle = (e) => {
+        menuRef.current.classList.toggle('nav-menu-visible');
+        e.target.classList.toggle('open');
+
+    }
 
     return (
         <div className='navbar'>
-            <div className="nav-logo">
-                <img src={logo} alt="Logo" />
-                <p>shopper</p>
+            <div className='nav-logo'>
+                <img src={logo} alt="" />
+                <p>SHOPPER</p>
             </div>
-            <ul className="nav-menu">
-                <li onClick={() => setMenu("shop")}>
-                    <Link style={{ texdecoration: 'none' }}to='/'>Shop</Link> {menu === "shop" ? <hr/>:<></>}
-                </li>
-        
-                <li onClick={() => setMenu("men")}>
-                    <Link style={{ texdecoration: 'none' }}to='/men'>men</Link>{menu === "men" ? <hr/>:<></>}
-                </li>
-                <li onClick={() => setMenu("women")}>
-                    <Link style={{ texdecoration: 'none' }}to='/women'>women</Link>{menu === "women" ? <hr/>:<></>}
-                </li>
-                <li onClick={() => setMenu("kids")}>
-                    <Link style={{ texdecoration: 'none' }}to='/kids'>kids</Link>{menu === "kids" ? <hr/>:<></>}
-                </li>
+            <img className='nav-dropdown' onClick={dropdown_toggle} src={nav_dropdown} alt="" />
+            <ul ref={menuRef} className='nav-menu'>
+                <li onClick={() => { setMenu("shop") }}><Link style={{ textDecoration: 'none', color: 'black' }} to='/'>Shop</Link>{menu === "shop" ? <hr /> : <></>}</li>
+                <li onClick={() => { setMenu("mens") }}><Link style={{ textDecoration: 'none', color: 'black' }} to='/mens'>Men</Link>{menu === "mens" ? <hr /> : <></>}</li>
+                <li onClick={() => { setMenu("womens") }}><Link style={{ textDecoration: 'none', color: 'black' }} to='/womens'>Women</Link>{menu === "womens" ? <hr /> : <></>}</li>
+                <li onClick={() => { setMenu("kids") }}><Link style={{ textDecoration: 'none', color: 'black' }} to='/kids'>Kids</Link>{menu === "kids" ? <hr /> : <></>}</li>
             </ul>
-            <div className="nav-login-cart">
-                <Link to='/login'>
-                    <button className="nav-login-cart-button">Login</button>
-                </Link>
-    
-                <Link to='/cart'><img src={cart_icon} alt="Cart" /></Link>
-                <div className="nav-cart-count">{cartCount}</div>
-            
+            <div className='nav-login-cart'>
+                <Link to='/login'><button>Login</button></Link>
+                <Link to='/cart'><img src={cart_icon} alt="" /></Link>
+                <div className='nav-cart-count'>{getTotalCartItems()}</div>
             </div>
         </div>
     );
